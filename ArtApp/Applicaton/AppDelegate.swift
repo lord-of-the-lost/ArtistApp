@@ -10,13 +10,15 @@ import UIKit
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-
+    
+    private lazy var navigationController = UINavigationController()
+    private lazy var coordinator = AppCoordinator(navigationController: navigationController)
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let artistListViewController = ArtistListViewController()
-        let navigationController = UINavigationController(rootViewController: artistListViewController)
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
+        coordinator.start()
         return true
     }
 }

@@ -40,6 +40,11 @@ final class ArtistListViewModel {
         )
     }
     
+    func getArtist(at index: Int) -> Artist? {
+        guard index >= 0 && index < filteredArtists.count else { return nil }
+        return filteredArtists[index]
+    }
+    
     func numberOfArtists() -> Int {
         filteredArtists.count
     }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ArtistCell: UITableViewCell {
+final class ArtistCell: UICollectionViewCell {
     
     /// Модель для конфигурации ячейки
     struct ArtistCellViewModel {
@@ -15,13 +15,6 @@ final class ArtistCell: UITableViewCell {
         let artistName: String
         let artistDescription: String
     }
-    
-    private lazy var containerView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 12
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
     
     private lazy var artistImage: UIImageView = {
         let imageView = UIImageView()
@@ -51,9 +44,9 @@ final class ArtistCell: UITableViewCell {
         return label
     }()
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
         setupConstraints()
     }
     
@@ -71,11 +64,10 @@ final class ArtistCell: UITableViewCell {
 
 // MARK: - Private Methods
 private extension ArtistCell {
-    func setupViews() {
-        contentView.addSubview(containerView)
-        containerView.addSubview(nameLabel)
-        containerView.addSubview(descriptionLabel)
-        containerView.addSubview(artistImage)
+    func setupView() {
+        contentView.addSubview(nameLabel)
+        contentView.addSubview(descriptionLabel)
+        contentView.addSubview(artistImage)
     }
     
     func setupArtistImage(with image: UIImage?) {
@@ -88,24 +80,19 @@ private extension ArtistCell {
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            
-            artistImage.topAnchor.constraint(equalTo: containerView.topAnchor),
-            artistImage.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            artistImage.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            artistImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+            artistImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            artistImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             artistImage.widthAnchor.constraint(equalToConstant: 96),
             artistImage.heightAnchor.constraint(equalToConstant: 96),
             
-            nameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
+            nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
             nameLabel.leadingAnchor.constraint(equalTo: artistImage.trailingAnchor, constant: 16),
-            nameLabel.trailingAnchor.constraint(lessThanOrEqualTo: containerView.trailingAnchor, constant: -12),
+            nameLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -12),
             nameLabel.heightAnchor.constraint(equalToConstant: 16),
             
             descriptionLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-            descriptionLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
             descriptionLabel.leadingAnchor.constraint(equalTo: artistImage.trailingAnchor, constant: 16),
             descriptionLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 48)
         ])

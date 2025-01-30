@@ -8,7 +8,18 @@
 import UIKit
 
 final class ArtistListViewController: UIViewController {
-    private var viewModel = ArtistListViewModel()
+    private let viewModel: ArtistListViewModel
+    private weak var coordinator: AppCoordinator?
+    
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+        label.numberOfLines = 1
+        label.text = "Artists"
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -19,19 +30,34 @@ final class ArtistListViewController: UIViewController {
         return searchBar
     }()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.separatorStyle = .none
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.showsVerticalScrollIndicator = false
-        tableView.register(ArtistCell.self, forCellReuseIdentifier: "ArtistCell")
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
+    private lazy var artistsCollectionView: UICollectionView = {
+        let itemWidth = UIScreen.main.bounds.width - 40
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.itemSize = CGSize(width: itemWidth, height: 96)
+        layout.minimumLineSpacing = 16
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(ArtistCell.self, forCellWithReuseIdentifier: "ArtistCell")
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
     }()
     
-    
     // MARK: - Lifecycle
+    init(viewModel: ArtistListViewModel, coordinator: AppCoordinator) {
+        self.viewModel = viewModel
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -41,14 +67,14 @@ final class ArtistListViewController: UIViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension ArtistListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension ArtistListViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.numberOfArtists()
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ArtistCell", for: indexPath) as? ArtistCell else {
-            return UITableViewCell() }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ArtistCell", for: indexPath) as? ArtistCell else {
+            return UICollectionViewCell() }
         
         let cellViewModel = viewModel.getArtistCellViewModel(at: indexPath.row)
         cell.configure(with: cellViewModel)
@@ -57,13 +83,10 @@ extension ArtistListViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-extension ArtistListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        112
+extension ArtistListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let artist = viewModel.getArtist(at: indexPath.row) else { return }
+        coordinator?.showArtistDetail(artist)
     }
 }
 
@@ -87,31 +110,33 @@ extension ArtistListViewController: UISearchBarDelegate {
 // MARK: - Private Methods
 private extension ArtistListViewController {
     func setupView() {
-        title = "Artists"
-        navigationController?.navigationBar.prefersLargeTitles = true
         view.backgroundColor = .white
+        view.addSubview(titleLabel)
         view.addSubview(searchBar)
-        view.addSubview(tableView)
+        view.addSubview(artistsCollectionView)
     }
     
     func bindViewModel() {
         viewModel.onUpdate = { [weak self] in
             DispatchQueue.main.async {
-                self?.tableView.reloadData()
+                self?.artistsCollectionView.reloadData()
             }
         }
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            
+            searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
-            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10),
-            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            artistsCollectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10),
+            artistsCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            artistsCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            artistsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }
