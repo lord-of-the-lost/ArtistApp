@@ -5,7 +5,6 @@
 //  Created by Николай Игнатов on 31.01.2025.
 //
 
-
 import UIKit
 
 final class PictureDetailViewController: UIViewController {
@@ -126,6 +125,6 @@ private extension PictureDetailViewController {
     }
     
     @objc func expandButtonTapped() {
-        coordinator?.popCurrentViewController()
+        coordinator?.showPicture(viewModel.workImageName)
     }
 }

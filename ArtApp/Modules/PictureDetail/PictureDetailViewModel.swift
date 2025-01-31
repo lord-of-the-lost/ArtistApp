@@ -5,7 +5,6 @@
 //  Created by Николай Игнатов on 31.01.2025.
 //
 
-
 import UIKit
 
 final class PictureDetailViewModel {
