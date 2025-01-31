@@ -27,6 +27,12 @@ final class AppCoordinator {
         navigationController.pushViewController(detailViewController, animated: true)
     }
     
+    func showPictureDetail(_ work: Work) {
+        let viewModel = PictureDetailViewModel(work: work)
+        let detailViewController = PictureDetailViewController(viewModel: viewModel, coordinator: self)
+        navigationController.pushViewController(detailViewController, animated: true)
+    }
+    
     func popCurrentViewController() {
         navigationController.popViewController(animated: true)
     }

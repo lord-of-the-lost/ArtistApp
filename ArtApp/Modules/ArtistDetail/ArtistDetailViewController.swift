@@ -86,6 +86,7 @@ final class ArtistDetailViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(WorkCell.self, forCellWithReuseIdentifier: "WorkCell")
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -110,7 +111,7 @@ final class ArtistDetailViewController: UIViewController {
     }
 }
 
-// MARK: -UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 extension ArtistDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.works.count
@@ -123,6 +124,13 @@ extension ArtistDetailViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegate
+extension ArtistDetailViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let work = viewModel.works[indexPath.item]
+        coordinator?.showPictureDetail(work)
+    }
+}
 
 // MARK: - Private Methods
 private extension ArtistDetailViewController {
