@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		609AFEF82D492F790048961E /* ArtApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArtApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		609AFEF82D492F790048961E /* ArtApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = ArtApp.app; path = "/Users/n.s.ignatov/Downloads/MainFolder/Development/ArtApp/build/Debug-iphoneos/ArtApp.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,16 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				609AFEFA2D492F790048961E /* ArtApp */,
-				609AFEF92D492F790048961E /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		609AFEF92D492F790048961E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				609AFEF82D492F790048961E /* ArtApp.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -108,7 +99,7 @@
 			mainGroup = 609AFEEF2D492F790048961E;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 609AFEF92D492F790048961E /* Products */;
+			productRefGroup = 609AFEEF2D492F790048961E;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
